@@ -44,8 +44,14 @@ Phase 0 (backup + audit) done. Phase 1 (foundation) mostly done: monorepo + `@de
 `useAsyncData`) using **`@deetravel/ui` (`PlaceCard`, `ImageWithVariants`)** — responsive
 srcset + blur-up from the `{cover}/{size}.jpg` convention. Dev reads Firestore from the
 emulator but loads cover images from the real public prod bucket (`NUXT_PUBLIC_IMAGE_BUCKET`).
-Verified end-to-end. Next: place detail pages (`/places/[slug]`), listing/filter pages,
-admin CRUD, then role-based rules (deploy-gated).
+**Full journey works**: home listing → `/places/[slug]` detail (real cover + content HTML
++ address + map link) → back, plus a real 404 for unknown slugs. The emulator enforces the
+DRAFT role-based rules, so **every public list query MUST filter `status == 'published'`**
+(a slug-only query is denied) — detail uses status+slug (composite index added). Next:
+listing/filter pages by province & category, then admin CRUD, then deploy rules (gated).
+
+Note: `firebase/seed-data.json` holds 6 real places copied read-only from prod (covers +
+content) for realistic dev; `pnpm seed` loads it into the emulator.
 
 ## Tooling
 Node 22, pnpm 11, Turborepo. **firebase-tools is pinned to v13 as a local devDep** because

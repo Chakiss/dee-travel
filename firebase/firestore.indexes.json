@@ -19,6 +19,14 @@
       ]
     },
     {
+      "collectionGroup": "places",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "slug", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "articles",
       "queryScope": "COLLECTION",
       "fields": [

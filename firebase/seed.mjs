@@ -2,8 +2,11 @@
  * Seed the local Firestore EMULATOR with a small, realistic sample.
  * Never touches the cloud — refuses to run unless FIRESTORE_EMULATOR_HOST is set.
  *
- * Usage: start the emulator, then `pnpm seed` (or `node firebase/seed.mjs`).
+ * Place records come from firebase/seed-data.json (real docs copied read-only
+ * from production, so covers + content are genuine). Usage: start the emulator,
+ * then `pnpm seed`.
  */
+import { readFileSync } from 'node:fs'
 import { initializeApp } from 'firebase-admin/app'
 import { getFirestore, Timestamp, GeoPoint } from 'firebase-admin/firestore'
 
@@ -15,69 +18,24 @@ if (!process.env.FIRESTORE_EMULATOR_HOST) {
 
 initializeApp({ projectId: 'demo-deetravel' })
 const db = getFirestore()
+db.settings({ ignoreUndefinedProperties: true })
 const now = Timestamp.now()
 
 const geographies = [{ id: 'isan', name: 'ภาคตะวันออกเฉียงเหนือ', slug: 'isan' }]
-const provinces = [{ id: 'ubon', name: 'อุบลราชธานี', slug: 'ubon-ratchathani', geography: 'geographies/isan' }]
+const provinces = [
+  { id: 'ubon', name: 'อุบลราชธานี', slug: 'ubon-ratchathani', geography: 'geographies/isan' },
+  { id: 'surin', name: 'สุรินทร์', slug: 'surin', geography: 'geographies/isan' },
+]
 const categories = [
   { id: 'temple', name: 'วัด', slug: 'temple' },
-  { id: 'cafe', name: 'คาเฟ่', slug: 'cafe' },
+  { id: 'nature', name: 'ธรรมชาติ', slug: 'nature' },
+  { id: 'culture', name: 'วัฒนธรรม', slug: 'culture' },
 ]
-// Real places copied from production (read-only) so dev shows real cover images
-// served from the public prod bucket. Kept small; content trimmed.
-const places = [
-  {
-    id: '0Afeio4LTMhNXL73trKL',
-    name: 'วัดใต้พระเจ้าใหญ่องค์ตื้อ',
-    slug: 'wat-tai-phra-chao-yai-ong-tue',
-    excerpt: 'พระพุทธรูปที่งดงามเป็นพระประธานองค์ศักดิ์สิทธิ์',
-    cover: '/images/places/0Afeio4LTMhNXL73trKL/cover',
-    position: new GeoPoint(15.2272229, 104.8653227),
-    featured: true,
-  },
-  {
-    id: '0CySwELJXDW1X6vqrFhB',
-    name: 'น้ำตกแสงจันทร์',
-    slug: 'num-tok-sangjan',
-    excerpt: 'น้ำตกกลางป่าที่แสงอาทิตย์ลอดผ่านช่องหินเป็นลำแสงงดงาม',
-    cover: '/images/places/0CySwELJXDW1X6vqrFhB/cover',
-    featured: true,
-  },
-  {
-    id: '0Qg3SdXgGs32NPWo1Tb0',
-    name: 'วนอุทยานน้ำตกบ๋าหลวง',
-    slug: 'ba-luang-waterfall-forest-park',
-    excerpt: 'วนอุทยานน้ำตกบ๋าหลวง ธรรมชาติร่มรื่นเหมาะแก่การพักผ่อน',
-    cover: '/images/places/0Qg3SdXgGs32NPWo1Tb0/cover',
-    featured: false,
-  },
-  {
-    id: '0SHslGaXPrrh7x7jETii',
-    name: 'ศาลหลักเมืองสุรินทร์',
-    slug: 'city-pillar-shrine',
-    excerpt: 'การผสมผสานระหว่างศิลปะไทยและศิลปะเขมรอย่างลงตัว',
-    cover: '/images/places/0SHslGaXPrrh7x7jETii/cover',
-    featured: false,
-  },
-  {
-    id: '0QVrwidxHfWQBgKBeARt',
-    name: 'ตำบลเมืองลีง',
-    slug: 'sao-muangleeng-surin',
-    excerpt: 'ความสวยงามของธรรมชาติ และวิถีชีวิตที่มีเอกลักษณ์',
-    cover: '/images/places/0QVrwidxHfWQBgKBeARt/cover',
-    featured: false,
-  },
-  {
-    id: '0d1Zp6owlQMsFUrY038G',
-    name: 'ผ้าทอบ้านกระชาย',
-    slug: 'ban-krachai-silk-weaving',
-    excerpt: 'ผ้าไหมลายโครมห้า และผ้ามัดหมี่ งานหัตถกรรมพื้นถิ่น',
-    cover: '/images/places/0d1Zp6owlQMsFUrY038G/cover',
-    featured: false,
-  },
-].map((p) => ({
+
+const placesData = JSON.parse(readFileSync(new URL('./seed-data.json', import.meta.url)))
+const places = placesData.map((p) => ({
   ...p,
-  content: `<p>${p.excerpt}</p>`,
+  position: p.position ? new GeoPoint(p.position.lat, p.position.lng) : undefined,
   status: 'published',
   createdAt: now,
   updatedAt: now,
