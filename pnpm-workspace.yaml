@@ -1,0 +1,12 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# Allow these deps to run install/build scripts (needed by Nuxt/Vite/Firebase).
+# esbuild fetches its platform binary; @parcel/watcher builds the native watcher;
+# @firebase/util & protobufjs run postinstall setup.
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  '@firebase/util': true
+  protobufjs: true

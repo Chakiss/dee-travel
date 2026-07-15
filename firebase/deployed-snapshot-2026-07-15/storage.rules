@@ -1,0 +1,10 @@
+// SNAPSHOT of Storage rules deployed to deetravel-project as of Phase 0
+// (2026-07-15). Kept for reference / rollback. Same over-broad write grant.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read;
+      allow write: if request.auth != null;
+    }
+  }
+}

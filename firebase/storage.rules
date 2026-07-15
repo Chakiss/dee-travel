@@ -1,0 +1,19 @@
+// TARGET Storage rules — DRAFT, NOT DEPLOYED.
+// Published media stays publicly readable (CDN-friendly); writes require editor role.
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isEditor() {
+      return request.auth != null &&
+        (request.auth.token.role == 'editor' || request.auth.token.role == 'admin');
+    }
+
+    // Public read for delivery (images are meant to be public);
+    // consider narrowing to /images/** and /media/** if private assets appear.
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if isEditor();
+    }
+  }
+}

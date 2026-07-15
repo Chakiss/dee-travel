@@ -1,0 +1,13 @@
+// SNAPSHOT of the rules deployed to deetravel-project as of Phase 0 audit
+// (2026-07-15). Kept for reference / rollback. DO NOT treat as the target.
+//
+// RISK: any authenticated user can write or delete ANY document.
+// Interim mitigation applied: public sign-up disabled. Real fix: see ../firestore.rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read;
+      allow write: if request.auth.uid != null;
+    }
+  }
+}
