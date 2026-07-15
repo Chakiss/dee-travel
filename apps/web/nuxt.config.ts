@@ -5,6 +5,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   typescript: { strict: true },
 
+  // Workspace UI package ships .vue SFCs — Vite must transpile it.
+  build: { transpile: ['@deetravel/ui'] },
+
   app: {
     head: {
       htmlAttrs: { lang: 'th' },
@@ -26,6 +29,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       useEmulator: false,
+      // Bucket that serves cover images. In dev this points at the real prod
+      // bucket (public read) even while Firestore is read from the emulator.
+      imageBucket: '',
       firebase: {
         apiKey: '',
         authDomain: '',

@@ -40,9 +40,12 @@ Phase 0 (backup + audit) done. Phase 1 (foundation) mostly done: monorepo + `@de
 + `@deetravel/firebase`; `apps/web` (SSR, render verified) + `apps/admin` (SPA) build;
 **Emulator-only dev env works** (seed + published-query verified). Dev = offline
 `demo-deetravel` project via Emulator Suite (no cloud dev project by choice).
-**`apps/web` now renders real places from the emulator via SSR** (`useFirestore()` →
-`useAsyncData`), verified end-to-end (place names in initial HTML). Next: `packages/ui`
-(shared components), place detail pages, admin CRUD, then role-based rules (deploy-gated).
+**`apps/web` renders real places from the emulator via SSR** (`useFirestore()` →
+`useAsyncData`) using **`@deetravel/ui` (`PlaceCard`, `ImageWithVariants`)** — responsive
+srcset + blur-up from the `{cover}/{size}.jpg` convention. Dev reads Firestore from the
+emulator but loads cover images from the real public prod bucket (`NUXT_PUBLIC_IMAGE_BUCKET`).
+Verified end-to-end. Next: place detail pages (`/places/[slug]`), listing/filter pages,
+admin CRUD, then role-based rules (deploy-gated).
 
 ## Tooling
 Node 22, pnpm 11, Turborepo. **firebase-tools is pinned to v13 as a local devDep** because

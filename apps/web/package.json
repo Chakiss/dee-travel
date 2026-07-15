@@ -13,6 +13,7 @@
   "dependencies": {
     "@deetravel/firebase": "workspace:*",
     "@deetravel/types": "workspace:*",
+    "@deetravel/ui": "workspace:*",
     "firebase": "^11.0.2",
     "nuxt": "^3.13.2",
     "vue": "^3.5.12",
