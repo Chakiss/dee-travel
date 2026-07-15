@@ -13,6 +13,7 @@ import {
 } from 'firebase/app'
 import {
   getFirestore,
+  initializeFirestore,
   connectFirestoreEmulator,
   collection,
   type Firestore,
@@ -53,7 +54,11 @@ export function initFirebase(opts: InitFirebaseOptions): FirebaseClients {
   if (clients) return clients
 
   const app = getApps()[0] ?? initializeApp(opts.config)
-  const db = getFirestore(app)
+  // Force long-polling against the emulator so Firestore works under Node SSR
+  // (the default WebChannel transport can hang there).
+  const db = opts.emulator
+    ? initializeFirestore(app, { experimentalForceLongPolling: true })
+    : getFirestore(app)
   const auth = getAuth(app)
   const storage = getStorage(app)
 

@@ -45,9 +45,15 @@ importers:
 
   apps/web:
     dependencies:
+      '@deetravel/firebase':
+        specifier: workspace:*
+        version: link:../../packages/firebase
       '@deetravel/types':
         specifier: workspace:*
         version: link:../../packages/types
+      firebase:
+        specifier: ^11.0.2
+        version: 11.10.0
       nuxt:
         specifier: ^3.13.2
         version: 3.21.8(@electric-sql/pglite@0.2.17)(@parcel/watcher@2.5.6)(@types/node@26.1.1)(@vue/compiler-sfc@3.5.39)(cac@6.7.14)(db0@0.3.4(@electric-sql/pglite@0.2.17))(esbuild@0.28.1)(ioredis@5.11.1)(magicast@0.5.3)(rollup-plugin-visualizer@7.0.1(rollup@4.62.2))(rollup@4.62.2)(terser@5.49.0)(typescript@5.9.3)(vite@7.3.6(@types/node@26.1.1)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.0))(vue-tsc@2.2.12(typescript@5.9.3))(yaml@2.9.0)
