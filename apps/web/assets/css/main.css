@@ -1,0 +1,92 @@
+/* Dee Travel design tokens — referenced from the legacy site (Kanit/Pattaya,
+   gold #DB9D1B, cyan #00AEEF, navy #242A3A). See docs + memory design-system. */
+:root {
+  --dt-gold: #db9d1b;
+  --dt-gold-d: #b9860f;
+  --dt-cyan: #00aeef;
+  --dt-cyan-d: #0091c9;
+  --dt-navy: #242a3a;
+  --dt-ink: #2b3140;
+  --dt-black: #1c1c1c;
+
+  --dt-bg: #ffffff;
+  --dt-surface: #ffffff;
+  --dt-surface-2: #f6f7f9;
+  --dt-muted: #6b7280;
+  --dt-line: #e7e9ee;
+
+  --font-display: 'Pattaya', ui-serif, cursive;
+  --font-body: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dt-navy: #eef1f5;
+    --dt-ink: #dfe3ea;
+    --dt-black: #0d0e11;
+    --dt-bg: #101216;
+    --dt-surface: #171a20;
+    --dt-surface-2: #1e222b;
+    --dt-muted: #9aa3b2;
+    --dt-line: #2a2f3a;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 300;
+  color: var(--dt-ink);
+  background: var(--dt-bg);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; }
+img { max-width: 100%; }
+
+/* Legacy section-header pattern: cyan Pattaya label -> Kanit bold-italic title -> centered divider */
+.dt-section-head { text-align: center; margin: 0 0 2rem; }
+.dt-eyebrow {
+  font-family: var(--font-display);
+  color: var(--dt-cyan);
+  font-size: 1.15rem;
+  margin: 0;
+}
+.dt-title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-style: italic;
+  color: var(--dt-navy);
+  font-size: clamp(1.5rem, 3.4vw, 2.15rem);
+  line-height: 1.2;
+  margin: 0.1em 0 0;
+}
+.dt-divider {
+  height: 2px;
+  border: 0;
+  margin: 1.1rem auto 0;
+  max-width: 1040px;
+  background: linear-gradient(90deg, transparent, var(--dt-line) 12%, #9aa1ad 50%, var(--dt-line) 88%, transparent);
+}
+
+/* Gold CTA (legacy search button) */
+.dt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.98rem;
+  color: #fff;
+  background: var(--dt-gold);
+  border: 0;
+  border-radius: 3px;
+  padding: 11px 22px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.dt-btn:hover { background: var(--dt-gold-d); }

@@ -8,10 +8,24 @@ export default defineNuxtConfig({
   // Workspace UI package ships .vue SFCs — Vite must transpile it.
   build: { transpile: ['@deetravel/ui'] },
 
+  css: ['~/assets/css/main.css'],
+
   app: {
     head: {
       htmlAttrs: { lang: 'th' },
       meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
+      // Legacy brand fonts: Pattaya (display/logo) + Kanit (everything else).
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600;1,700&family=Pattaya&display=swap',
+        },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+      ],
     },
   },
 

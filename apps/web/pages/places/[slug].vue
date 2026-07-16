@@ -6,12 +6,10 @@ import { coverVariants } from '@deetravel/ui'
 const route = useRoute()
 const slug = String(route.params.slug)
 
-const { db, typedCollection } = useFirestore()
+const { db, typedCollection, toPlain } = useFirestore()
 const imageBucket = useRuntimeConfig().public.imageBucket as string
 
 const { data: place } = await useAsyncData(`place-${slug}`, async () => {
-  // Must filter by status too: the security rules only permit reads of published
-  // docs, so a list query has to constrain to them (needs a status+slug index).
   const q = query(
     typedCollection(db, 'places'),
     where('status', '==', 'published'),
@@ -19,7 +17,7 @@ const { data: place } = await useAsyncData(`place-${slug}`, async () => {
     limit(1),
   )
   const snap = await getDocs(q)
-  return snap.empty ? null : (snap.docs[0].data() as Place)
+  return snap.empty ? null : toPlain<Place>(snap.docs[0].data())
 })
 
 if (!place.value) {
@@ -29,12 +27,10 @@ if (!place.value) {
 const cover = computed(() =>
   place.value?.cover ? coverVariants(imageBucket, place.value.cover) : null,
 )
-
 const mapUrl = computed(() => {
   const pos = place.value?.position
   return pos ? `https://www.google.com/maps/search/?api=1&query=${pos.latitude},${pos.longitude}` : null
 })
-
 const hasValue = (v?: string) => !!v && v.trim() !== '' && v.trim() !== '-'
 
 useHead(() => ({
@@ -52,6 +48,7 @@ useHead(() => ({
     </figure>
 
     <header class="head">
+      <p class="dt-eyebrow">DeeDestination</p>
       <h1>{{ place.name }}</h1>
       <p v-if="place.excerpt" class="excerpt">{{ place.excerpt }}</p>
     </header>
@@ -71,34 +68,53 @@ useHead(() => ({
       </div>
       <div v-if="mapUrl">
         <dt>แผนที่</dt>
-        <dd><a :href="mapUrl" target="_blank" rel="noopener">เปิดใน Google Maps</a></dd>
+        <dd><a class="map" :href="mapUrl" target="_blank" rel="noopener">เปิดใน Google Maps ↗</a></dd>
       </div>
     </dl>
 
     <!-- Trusted CMS content authored in the admin. -->
     <div class="content" v-html="place.content" />
+
+    <NuxtLink to="/" class="dt-btn back-btn">← ดูสถานที่อื่น</NuxtLink>
   </article>
 </template>
 
 <style scoped>
-.detail { max-width: 760px; margin: 0 auto; padding: 4vh 24px 0; }
-.back { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; text-decoration: none; color: #0f7a63; }
-.cover { margin: 0 0 1.8rem; border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 9; background: #ece8df; }
+.detail { max-width: 760px; margin: 0 auto; padding: 3vh 24px 0; }
+.back { display: inline-block; margin-bottom: 1.4rem; font-size: 0.9rem; text-decoration: none; color: var(--dt-cyan); }
+.back:hover { color: var(--dt-cyan-d); }
+.cover { margin: 0 0 1.8rem; border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 9; background: var(--dt-surface-2); }
 .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.head h1 { font-size: clamp(1.8rem, 4.5vw, 2.6rem); margin: 0 0 0.3em; line-height: 1.2; }
-.excerpt { font-size: 1.1rem; color: #57625b; margin: 0 0 1.5rem; }
-.meta { display: grid; gap: 10px; margin: 0 0 2rem; padding: 18px 20px; border: 1px solid #e4dfd3; border-radius: 12px; }
+.head { margin-bottom: 1.8rem; }
+.head h1 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-style: italic;
+  color: var(--dt-navy);
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+  line-height: 1.2;
+  margin: 0.15em 0 0.3em;
+}
+.excerpt { font-size: 1.1rem; color: var(--dt-muted); margin: 0; }
+.meta {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 2rem;
+  padding: 18px 20px;
+  background: var(--dt-surface-2);
+  border: 1px solid var(--dt-line);
+  border-radius: 12px;
+}
 .meta div { display: grid; grid-template-columns: 92px 1fr; gap: 12px; font-size: 0.92rem; }
-.meta dt { color: #8a938b; margin: 0; }
-.meta dd { margin: 0; }
-.meta a { color: #0f7a63; }
-.content { font-size: 1.02rem; line-height: 1.8; }
+.meta dt { color: var(--dt-muted); margin: 0; }
+.meta dd { margin: 0; color: var(--dt-ink); }
+.meta a { color: var(--dt-cyan-d); }
+.meta .map { color: var(--dt-gold-d); font-weight: 500; }
+.content { font-size: 1.04rem; line-height: 1.85; color: var(--dt-ink); }
 .content :deep(p) { margin: 0 0 1em; }
 .content :deep(img) { max-width: 100%; height: auto; border-radius: 10px; }
 .content :deep(figure) { margin: 1.2em 0; }
-.content :deep(a) { color: #0f7a63; }
-@media (prefers-color-scheme: dark) {
-  .excerpt { color: #9eaaa0; }
-  .meta { border-color: #2a322b; }
-}
+.content :deep(strong) { color: var(--dt-navy); }
+.content :deep(a) { color: var(--dt-cyan-d); }
+.back-btn { margin: 2.5rem 0 0; }
 </style>

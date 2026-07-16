@@ -53,6 +53,18 @@ listing/filter pages by province & category, then admin CRUD, then deploy rules 
 Note: `firebase/seed-data.json` holds 6 real places copied read-only from prod (covers +
 content) for realistic dev; `pnpm seed` loads it into the emulator.
 
+**Design system** references the legacy site (see memory `deetravel-design-system`): fonts
+**Kanit** (body/UI, headings are bold-italic) + **Pattaya** (display/logo wordmark), colors
+**#DB9D1B gold** (CTA), **#00AEEF cyan** (labels/links), **#242A3A navy**; full-bleed photo
+hero, "Dee___" section eyebrows, dark footer. Tokens live in `apps/web/assets/css/main.css`
+(`--dt-*`); `packages/ui` components consume them via `var(--dt-*)`. Legacy logo/favicons are
+in `apps/web/public/brand/` + `apps/web/public/`. Google Fonts loaded via `<link>` in nuxt.config.
+
+**SSR gotcha (fixed):** Firestore `Timestamp`/`GeoPoint` are class instances that break Nuxt's
+payload serialization → client hydration throws (page 404s in-browser though curl/SSR is 200).
+Always pass query results through `toPlain()` (from `@deetravel/firebase`) before returning
+from `useAsyncData`.
+
 ## Tooling
 Node 22, pnpm 11, Turborepo. **firebase-tools is pinned to v13 as a local devDep** because
 global v15 requires Java 21 and this machine has Java 11 — run emulator via `pnpm emulators`

@@ -102,4 +102,24 @@ export function typedCollection<K extends CollectionId>(
   ) as CollectionReference<Collections[K]>
 }
 
+/**
+ * Deep-convert Firestore values (Timestamp, GeoPoint) into plain JSON-safe data
+ * so query results survive Nuxt's SSR payload serialization and client hydration.
+ * Firestore class instances (GeoPoint/Timestamp) otherwise break the payload.
+ */
+export function toPlain<T>(data: unknown): T {
+  return JSON.parse(
+    JSON.stringify(data, (_key, value) => {
+      if (value && typeof value === 'object') {
+        const v = value as Record<string, unknown>
+        if (typeof v.toDate === 'function') return (v.toDate as () => Date)().toISOString()
+        if (typeof v.latitude === 'number' && typeof v.longitude === 'number') {
+          return { latitude: v.latitude, longitude: v.longitude }
+        }
+      }
+      return value
+    }),
+  ) as T
+}
+
 export type { Collections, CollectionId } from '@deetravel/types'

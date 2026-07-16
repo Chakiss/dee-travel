@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { getDocs, query, where, limit } from 'firebase/firestore'
 import type { Place } from '@deetravel/types'
-import { PlaceCard } from '@deetravel/ui'
+import { PlaceCard, coverVariants } from '@deetravel/ui'
 
 useHead({ title: 'Dee Travel — เที่ยวอย่างลึกซึ้ง สนุกตามสไตล์' })
 
-const { db, typedCollection } = useFirestore()
+const { db, typedCollection, toPlain } = useFirestore()
 const imageBucket = useRuntimeConfig().public.imageBucket as string
 
-// Fetched server-side (SSR) → real content lands in the initial HTML for SEO.
 const { data: places, error } = await useAsyncData('featured-places', async () => {
   const q = query(
     typedCollection(db, 'places'),
@@ -16,23 +15,36 @@ const { data: places, error } = await useAsyncData('featured-places', async () =
     limit(12),
   )
   const snap = await getDocs(q)
-  return snap.docs.map((d) => d.data() as Place)
+  return snap.docs.map((d) => toPlain<Place>(d.data()))
+})
+
+// Full-bleed hero image from the first place's cover (legacy pattern).
+const heroBg = computed(() => {
+  const first = places.value?.[0]
+  return first?.cover ? coverVariants(imageBucket, first.cover).large : null
 })
 </script>
 
 <template>
-  <main class="wrap">
-    <header class="hero">
-      <p class="eyebrow">Dee Travel · Public</p>
-      <h1>เที่ยวอย่างลึกซึ้ง สนุกตามสไตล์</h1>
-      <p class="lede">รวมสถานที่ท่องเที่ยวทั่วไทย คัดสรรมาให้คุณออกเดินทาง</p>
-    </header>
+  <div>
+    <section class="hero" :style="heroBg ? { backgroundImage: `url(${heroBg})` } : undefined">
+      <div class="hero-inner">
+        <img src="/brand/logo-white.png" alt="Dee Travel" class="hero-logo">
+        <p class="hero-tag">เที่ยวสนุกตามวิถีแบบไทย</p>
+        <h1 class="wordmark">DeeTravel</h1>
+      </div>
+    </section>
 
-    <p v-if="error" class="err">โหลดข้อมูลไม่สำเร็จ — emulator รันอยู่หรือไม่?</p>
+    <main class="wrap">
+      <div class="dt-section-head">
+        <p class="dt-eyebrow">DeeDestination</p>
+        <h2 class="dt-title">สถานที่แนะนำ</h2>
+        <hr class="dt-divider">
+      </div>
 
-    <section v-else>
-      <h2 class="sec">สถานที่แนะนำ <span class="count">{{ places?.length ?? 0 }}</span></h2>
-      <div class="grid">
+      <p v-if="error" class="err">โหลดข้อมูลไม่สำเร็จ — emulator รันอยู่หรือไม่?</p>
+
+      <div v-else class="grid">
         <NuxtLink
           v-for="p in places"
           :key="p.id"
@@ -42,26 +54,54 @@ const { data: places, error } = await useAsyncData('featured-places', async () =
           <PlaceCard :place="p" :bucket="imageBucket" />
         </NuxtLink>
       </div>
-      <p v-if="!places?.length" class="empty">
+      <p v-if="!error && !places?.length" class="empty">
         ยังไม่มีข้อมูล — รัน <code>pnpm seed</code> เพื่อใส่ตัวอย่าง
       </p>
-    </section>
-  </main>
+    </main>
+  </div>
 </template>
 
 <style scoped>
-.wrap { max-width: 1080px; margin: 0 auto; padding: 6vh 24px 0; }
-.hero { margin-bottom: 3.5rem; }
-.eyebrow { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.72rem; font-weight: 700; color: #0f7a63; }
-h1 { font-size: clamp(2.2rem, 5.5vw, 3.4rem); margin: 0.15em 0 0.25em; line-height: 1.15; }
-.lede { font-size: 1.12rem; color: #57625b; margin: 0; }
-.sec { font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; margin: 0 0 1.2rem; }
-.count { font-size: 0.78rem; background: #dcebe5; color: #0b5d4b; border-radius: 100px; padding: 2px 10px; font-variant-numeric: tabular-nums; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-.card-link { text-decoration: none; color: inherit; display: block; }
-.empty, .err { color: #8a938b; font-size: 0.9rem; }
-.err { color: #b8472f; }
-@media (prefers-color-scheme: dark) {
-  .lede { color: #9eaaa0; }
+.hero {
+  position: relative;
+  min-height: 74vh;
+  display: grid;
+  place-items: center;
+  background-color: var(--dt-navy);
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  color: #fff;
 }
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20, 26, 38, 0.45), rgba(20, 26, 38, 0.62));
+}
+.hero-inner { position: relative; z-index: 1; padding: 24px; }
+.hero-logo { height: 88px; width: auto; margin-bottom: 0.5rem; filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.3)); }
+.hero-tag {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1rem, 2.4vw, 1.35rem);
+  letter-spacing: 0.02em;
+  margin: 0;
+  opacity: 0.95;
+}
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.2rem, 9vw, 6.5rem);
+  line-height: 1;
+  margin: 0.05em 0 0;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+}
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 4.5rem 24px 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 22px; }
+.card-link { text-decoration: none; color: inherit; display: block; }
+.empty, .err { text-align: center; color: var(--dt-muted); font-size: 0.9rem; }
+.err { color: #c0392b; }
 </style>
