@@ -22,15 +22,16 @@ db.settings({ ignoreUndefinedProperties: true })
 const now = Timestamp.now()
 
 const geographies = [{ id: 'isan', name: 'ภาคตะวันออกเฉียงเหนือ', slug: 'isan' }]
-const provinces = [
-  { id: 'ubon', name: 'อุบลราชธานี', slug: 'ubon-ratchathani', geography: 'geographies/isan' },
-  { id: 'surin', name: 'สุรินทร์', slug: 'surin', geography: 'geographies/isan' },
-]
 const categories = [
   { id: 'temple', name: 'วัด', slug: 'temple' },
   { id: 'nature', name: 'ธรรมชาติ', slug: 'nature' },
   { id: 'culture', name: 'วัฒนธรรม', slug: 'culture' },
 ]
+
+// Real provinces/districts referenced by the seed places (plain strings, no refs).
+const geo = JSON.parse(readFileSync(new URL('./geo-seed.json', import.meta.url)))
+const provinces = geo.provinces.map((p) => ({ ...p, geography: 'geographies/isan' }))
+const districts = geo.districts
 
 const placesData = JSON.parse(readFileSync(new URL('./seed-data.json', import.meta.url)))
 const places = placesData.map((p) => ({
@@ -52,6 +53,7 @@ async function seedCollection(name, docs) {
 console.log(`Seeding emulator at ${process.env.FIRESTORE_EMULATOR_HOST} ...`)
 await seedCollection('geographies', geographies)
 await seedCollection('provinces', provinces)
+await seedCollection('districts', districts)
 await seedCollection('categories', categories)
 await seedCollection('places', places)
 

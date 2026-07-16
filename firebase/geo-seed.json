@@ -1,0 +1,51 @@
+{
+  "provinces": [
+    {
+      "id": "6fE1g1uOvfJW9kD7wh40",
+      "name": "อุบลราชธานี",
+      "slug": "ubonratchathani"
+    },
+    {
+      "id": "hErPPCo7gAnTrAcoBvp5",
+      "name": "ขอนแก่น",
+      "slug": "khonkaen"
+    },
+    {
+      "id": "gy6liXdx1wNG4yeeuYij",
+      "name": "สุรินทร์",
+      "slug": "surin"
+    }
+  ],
+  "districts": [
+    {
+      "id": "n6jXZ3E80SqhfRjpW6qe",
+      "name": "เมืองสุรินทร์",
+      "provinceId": "gy6liXdx1wNG4yeeuYij"
+    },
+    {
+      "id": "Og9hCPUYMyF4W5M6e5Ge",
+      "name": "สังขะ",
+      "provinceId": "gy6liXdx1wNG4yeeuYij"
+    },
+    {
+      "id": "mqVV5MI6UStn9OCMfeEb",
+      "name": "โขงเจียม",
+      "provinceId": "6fE1g1uOvfJW9kD7wh40"
+    },
+    {
+      "id": "wi0W87Lg5plg1STWWDLR",
+      "name": "จอมพระ",
+      "provinceId": "gy6liXdx1wNG4yeeuYij"
+    },
+    {
+      "id": "fpudZM9Mhu2X9wGxgb2o",
+      "name": "กระนวน",
+      "provinceId": "hErPPCo7gAnTrAcoBvp5"
+    },
+    {
+      "id": "BXcyf0vAKqqqWILUflzV",
+      "name": "เมืองอุบลราชธานี",
+      "provinceId": "6fE1g1uOvfJW9kD7wh40"
+    }
+  ]
+}

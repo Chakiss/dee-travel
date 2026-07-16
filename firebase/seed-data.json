@@ -14,7 +14,11 @@
     "position": {
       "lat": 15.2272229,
       "lng": 104.8653227
-    }
+    },
+    "provinceId": "6fE1g1uOvfJW9kD7wh40",
+    "provinceName": "อุบลราชธานี",
+    "districtId": "BXcyf0vAKqqqWILUflzV",
+    "districtName": "เมืองอุบลราชธานี"
   },
   {
     "id": "0CySwELJXDW1X6vqrFhB",
@@ -31,7 +35,11 @@
     "position": {
       "lat": 15.516237,
       "lng": 105.588984
-    }
+    },
+    "provinceId": "6fE1g1uOvfJW9kD7wh40",
+    "provinceName": "อุบลราชธานี",
+    "districtId": "mqVV5MI6UStn9OCMfeEb",
+    "districtName": "โขงเจียม"
   },
   {
     "id": "0Qg3SdXgGs32NPWo1Tb0",
@@ -48,7 +56,11 @@
     "position": {
       "lat": 16.889256,
       "lng": 103.087182
-    }
+    },
+    "provinceId": "hErPPCo7gAnTrAcoBvp5",
+    "provinceName": "ขอนแก่น",
+    "districtId": "fpudZM9Mhu2X9wGxgb2o",
+    "districtName": "กระนวน"
   },
   {
     "id": "0SHslGaXPrrh7x7jETii",
@@ -65,7 +77,11 @@
     "position": {
       "lat": 14.885618,
       "lng": 103.489591
-    }
+    },
+    "provinceId": "gy6liXdx1wNG4yeeuYij",
+    "provinceName": "สุรินทร์",
+    "districtId": "n6jXZ3E80SqhfRjpW6qe",
+    "districtName": "เมืองสุรินทร์"
   },
   {
     "id": "0QVrwidxHfWQBgKBeARt",
@@ -82,7 +98,11 @@
     "position": {
       "lat": 15.148816,
       "lng": 103.472045
-    }
+    },
+    "provinceId": "gy6liXdx1wNG4yeeuYij",
+    "provinceName": "สุรินทร์",
+    "districtId": "wi0W87Lg5plg1STWWDLR",
+    "districtName": "จอมพระ"
   },
   {
     "id": "0d1Zp6owlQMsFUrY038G",
@@ -99,6 +119,10 @@
     "position": {
       "lat": 14.692122,
       "lng": 103.778406
-    }
+    },
+    "provinceId": "gy6liXdx1wNG4yeeuYij",
+    "provinceName": "สุรินทร์",
+    "districtId": "Og9hCPUYMyF4W5M6e5Ge",
+    "districtName": "สังขะ"
   }
 ]

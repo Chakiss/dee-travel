@@ -29,13 +29,13 @@ export default defineNuxtConfig({
     },
   },
 
-  // Route rendering strategy (Section 2 of docs/ARCHITECTURE.md).
-  // Detail pages prerender + ISR; listings SSR. Wired fully in Phase 2.
+  // Route rendering: plain SSR for now. Caching (ISR/SWR) is added deliberately
+  // in the SEO phase — and must vary by query on the dynamic /places listing,
+  // so it is intentionally NOT cached here.
   routeRules: {
-    '/': { swr: 3600 },
-    '/places/**': { swr: 3600 },
-    '/articles/**': { swr: 3600 },
-    '/events/**': { swr: 3600 },
+    '/places/:slug': { swr: 3600 },
+    '/articles/:slug': { swr: 3600 },
+    '/events/:slug': { swr: 3600 },
   },
 
   // Firebase web config is public-by-design. Values are overridden at runtime from

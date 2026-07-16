@@ -32,6 +32,9 @@ const heroBg = computed(() => {
         <img src="/brand/logo-white.png" alt="Dee Travel" class="hero-logo">
         <p class="hero-tag">เที่ยวสนุกตามวิถีแบบไทย</p>
         <h1 class="wordmark">DeeTravel</h1>
+        <div class="hero-search">
+          <HeroSearch />
+        </div>
       </div>
     </section>
 
@@ -98,6 +101,7 @@ const heroBg = computed(() => {
   margin: 0.05em 0 0;
   text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
 }
+.hero-search { margin-top: 2rem; }
 
 .wrap { max-width: 1100px; margin: 0 auto; padding: 4.5rem 24px 0; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 22px; }

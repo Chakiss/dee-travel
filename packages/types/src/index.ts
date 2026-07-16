@@ -164,6 +164,13 @@ export interface Place extends ContentBase {
   amenities?: string[] // additive
   rating?: number // additive
   reviewCount?: number // additive
+
+  // Denormalised geo (additive) — plain strings for easy filtering/display,
+  // alongside the legacy reference fields above.
+  provinceId?: string // additive
+  provinceName?: string // additive
+  districtId?: string // additive
+  districtName?: string // additive
 }
 
 export type ArticleType = 'guide' | 'listicle' | 'story' | 'tips' | 'news'

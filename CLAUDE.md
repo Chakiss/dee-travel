@@ -44,11 +44,19 @@ Phase 0 (backup + audit) done. Phase 1 (foundation) mostly done: monorepo + `@de
 `useAsyncData`) using **`@deetravel/ui` (`PlaceCard`, `ImageWithVariants`)** — responsive
 srcset + blur-up from the `{cover}/{size}.jpg` convention. Dev reads Firestore from the
 emulator but loads cover images from the real public prod bucket (`NUXT_PUBLIC_IMAGE_BUCKET`).
-**Full journey works**: home listing → `/places/[slug]` detail (real cover + content HTML
-+ address + map link) → back, plus a real 404 for unknown slugs. The emulator enforces the
-DRAFT role-based rules, so **every public list query MUST filter `status == 'published'`**
-(a slug-only query is denied) — detail uses status+slug (composite index added). Next:
-listing/filter pages by province & category, then admin CRUD, then deploy rules (gated).
+**Full journey works**: home (hero with legacy-style จังหวัด/อำเภอ/keyword search bar) →
+`/places` listing with province+district+keyword filters → `/places/[slug]` detail (real
+cover + content + address + map) → back, plus a real 404. The emulator enforces the DRAFT
+role-based rules, so **every public list query MUST filter `status == 'published'`** (slug-only
+denied); detail uses status+slug, listing uses status+provinceId (composite indexes added).
+Places carry denormalized `provinceId/provinceName/districtId/districtName` for filtering
+(seeded from real geo). Next: articles/events pages, category filter, admin CRUD, deploy rules.
+
+**Nuxt SSR gotchas learned:** (1) don't cache dynamic query pages with routeRules SWR — it
+serves stale results ignoring the query; keep `/places` plain SSR (only `/places/:slug` etc.
+are SWR-cached). (2) A listing whose data depends on `route.query` needs
+`definePageMeta({ key: route => route.fullPath })` to remount on query change, plus
+`useAsyncData(..., { watch: [computed refs] })` reading the query via computeds.
 
 Note: `firebase/seed-data.json` holds 6 real places copied read-only from prod (covers +
 content) for realistic dev; `pnpm seed` loads it into the emulator.

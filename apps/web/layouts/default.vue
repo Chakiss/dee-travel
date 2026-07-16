@@ -7,8 +7,7 @@
         </NuxtLink>
         <nav class="nav">
           <NuxtLink to="/">หน้าแรก</NuxtLink>
-          <NuxtLink to="/">สถานที่</NuxtLink>
-          <NuxtLink to="/">บทความ</NuxtLink>
+          <NuxtLink to="/places">สถานที่</NuxtLink>
         </nav>
       </div>
     </header>
