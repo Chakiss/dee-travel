@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@deetravel/firebase": "workspace:*",
+    "@deetravel/marketing": "workspace:*",
     "@deetravel/types": "workspace:*",
     "@deetravel/ui": "workspace:*",
     "firebase": "^11.0.2",

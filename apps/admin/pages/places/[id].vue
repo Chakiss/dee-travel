@@ -76,6 +76,7 @@ function setStatus(s: ContentStatus) {
       <h1>{{ isNew ? 'เพิ่มสถานที่' : 'แก้ไขสถานที่' }}</h1>
       <div class="actions">
         <span v-if="saved" class="ok">บันทึกแล้ว ✓</span>
+        <NuxtLink v-if="!isNew" :to="`/facebook/${id}`" class="btn btn-ghost fb">✦ สร้างคอนเทนต์ Facebook</NuxtLink>
         <button v-if="form.status !== 'published'" class="btn btn-ghost" :disabled="saving" @click="setStatus('published')">เผยแพร่</button>
         <button v-else class="btn btn-ghost" :disabled="saving" @click="setStatus('draft')">เปลี่ยนเป็นฉบับร่าง</button>
         <button class="btn btn-primary" :disabled="saving" @click="save">{{ saving ? 'กำลังบันทึก…' : 'บันทึก' }}</button>
@@ -116,6 +117,8 @@ function setStatus(s: ContentStatus) {
 h1 { font-size: 1.6rem; font-weight: 600; color: var(--dt-navy); margin: 0; }
 .actions { display: flex; align-items: center; gap: 10px; }
 .ok { color: var(--st-published); font-size: 0.85rem; }
+.fb { color: var(--dt-cyan-d); border-color: var(--dt-cyan); }
+.fb:hover { background: var(--st-scheduled-bg); }
 .err { color: #c0392b; margin: 0 0 12px; }
 .grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
 .col { background: var(--dt-surface); border: 1px solid var(--dt-line); border-radius: 12px; padding: 20px; }

@@ -46,7 +46,10 @@ const statusLabel: Record<string, string> = {
             <td>{{ p.provinceName ?? '—' }}</td>
             <td>{{ p.districtName ?? '—' }}</td>
             <td><span class="status" :class="p.status ?? 'draft'">{{ statusLabel[p.status ?? 'draft'] }}</span></td>
-            <td class="right"><NuxtLink :to="`/places/${p.id}`" class="edit">แก้ไข</NuxtLink></td>
+            <td class="right">
+              <NuxtLink :to="`/facebook/${p.id}`" class="fb">Facebook</NuxtLink>
+              <NuxtLink :to="`/places/${p.id}`" class="edit">แก้ไข</NuxtLink>
+            </td>
           </tr>
           <tr v-if="!filtered.length"><td colspan="5" class="empty">ไม่พบสถานที่</td></tr>
         </tbody>
@@ -71,7 +74,8 @@ thead th { background: var(--dt-surface-2); font-size: 0.74rem; text-transform: 
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: var(--dt-surface-2); }
 .name { font-weight: 500; color: var(--dt-navy); }
-.right { text-align: right; }
+.right { text-align: right; white-space: nowrap; }
 .edit { color: var(--dt-cyan-d); font-weight: 500; }
+.fb { color: var(--dt-gold-d); font-weight: 500; margin-right: 16px; }
 .empty { text-align: center; color: var(--dt-muted); }
 </style>

@@ -36,7 +36,17 @@ don't rename). Images are pre-sized: `{cover}/{large,medium,thumbnail,tiny}.jpg`
   user's terminal (`! firebase login`).
 
 ## Status
-**Phase 3 admin started** — `apps/admin` (Nuxt SPA) has: Firebase Auth login (`pages/login.vue`),
+**Phase 4 Facebook Marketing Toolkit (template engine) done.** `packages/marketing` is a pure,
+deterministic generator: `generateFacebookContent(place, {postType, tone})` → 5 caption variants,
+th/en hashtags, CTA, highlights, headline, creative format, image spec, audience. No AI (Phase 5
+can swap the strings for Claude, same shape). Admin exposes it at `/facebook/[id]` (a Facebook
+link on each place row + a button in the editor) — post-type/tone selectors, copy-to-clipboard
+per caption + hashtags. Verified: engine unit-tested via `node --experimental-strip-types`, and
+the page rendered/generated live in a browser. Note: `/facebook/[id]` is a TOP-LEVEL route on
+purpose — a nested `places/[id]/facebook.vue` collided with the `places/[id].vue` editor (Nuxt
+treats `[id].vue` + `[id]/child` as parent/child; the parent lacks `<NuxtPage/>`).
+
+**Phase 3 admin done** — `apps/admin` (Nuxt SPA) has: Firebase Auth login (`pages/login.vue`),
 async auth plugin + global route guard, sidebar layout, dashboard, places list, and a working
 place editor that **writes to Firestore through the role-based rules** (verified end-to-end in a
 browser). Dev admin user is seeded into the Auth emulator: `admin@deetravel.local` / `dee12345`
