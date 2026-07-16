@@ -28,3 +28,6 @@ coverage/
 
 # local emulator dataset (regenerable via firebase/import-from-prod.mjs)
 firebase/emulator-data/
+
+# nuxi generate symlink
+apps/*/dist
