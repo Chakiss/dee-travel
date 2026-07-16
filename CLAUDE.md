@@ -36,6 +36,15 @@ don't rename). Images are pre-sized: `{cover}/{large,medium,thumbnail,tiny}.jpg`
   user's terminal (`! firebase login`).
 
 ## Status
+**Phase 6 (partial) + deploy scaffold + CMS create-new done.** Toolkit now persists:
+`/facebook/[id]` saves a `MarketingAsset` to Firestore + exports CSV; web has GA4 plumbing
+(`NUXT_PUBLIC_GA_ID`). AI generation has a production path: callable Cloud Function
+`functions/generateFbContent` (auth-gated, key in a Secret) — see `docs/DEPLOY.md` for the
+full deploy runbook (dev project, rules checklist, hosting split). CMS: create-new place
+verified (setDoc via editor claim), editor shows a cover preview. **Remaining:** content
+calendar / performance tracking, article/event CRUD pages, cover image upload, and actually
+deploying (deetravel-dev + role-based rules) — all approval-gated.
+
 **Phase 5 AI generation done.** Admin `/facebook/[id]` has a "✦ สร้างด้วย AI" button that POSTs
 to a Nitro server route `apps/admin/server/api/fb-generate.post.ts` calling Claude (`claude-opus-4-8`)
 to produce richer captions in the SAME `GeneratedContent` shape as the template engine. The API key
