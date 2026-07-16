@@ -11,6 +11,7 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "emulators": "firebase emulators:start",
+    "emulators:staging": "firebase emulators:start --only firestore,auth --import=./firebase/emulator-data --export-on-exit=./firebase/emulator-data",
     "seed": "node firebase/seed.mjs"
   },
   "devDependencies": {

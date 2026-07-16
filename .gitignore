@@ -25,3 +25,6 @@ ui-debug.log
 .DS_Store
 *.log
 coverage/
+
+# local emulator dataset (regenerable via firebase/import-from-prod.mjs)
+firebase/emulator-data/
