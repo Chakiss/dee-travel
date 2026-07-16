@@ -3,7 +3,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import type { Place } from '@deetravel/types'
 import {
   generateFacebookContent, POST_TYPES, TONES,
-  type PostType, type Tone,
+  type PostType, type Tone, type GeneratedContent,
 } from '@deetravel/marketing'
 
 const route = useRoute()
@@ -21,20 +21,53 @@ useHead(() => ({ title: `Facebook · ${place.value?.name} — Dee Travel Admin` 
 const postType = ref<PostType>('recommendation')
 const tone = ref<Tone>('friendly')
 
-const content = computed(() => {
-  const p = place.value
-  if (!p) return null
-  return generateFacebookContent(
-    {
-      name: p.name,
-      excerpt: p.excerpt,
-      provinceName: p.provinceName,
-      districtName: p.districtName,
-      type: p.type,
-    },
-    { postType: postType.value, tone: tone.value },
-  )
+function marketingInput() {
+  const p = place.value!
+  return { name: p.name, excerpt: p.excerpt, provinceName: p.provinceName, districtName: p.districtName, type: p.type }
+}
+
+// Template engine is the default + fallback; AI result (if generated) overrides it.
+const templateContent = computed<GeneratedContent | null>(() =>
+  place.value
+    ? generateFacebookContent(marketingInput(), { postType: postType.value, tone: tone.value })
+    : null,
+)
+const aiContent = ref<GeneratedContent | null>(null)
+const generatedBy = ref<'template' | 'ai'>('template')
+const generating = ref(false)
+const genError = ref('')
+
+const content = computed(() => aiContent.value ?? templateContent.value)
+
+// Changing type/tone reverts to the template until AI is run again.
+watch([postType, tone], () => {
+  aiContent.value = null
+  generatedBy.value = 'template'
+  genError.value = ''
 })
+
+async function generateAI() {
+  if (!place.value) return
+  generating.value = true
+  genError.value = ''
+  try {
+    const res = await $fetch<{ content: GeneratedContent; generatedBy: 'ai' | 'template'; reason?: string }>(
+      '/api/fb-generate',
+      { method: 'POST', body: { input: marketingInput(), postType: postType.value, tone: tone.value } },
+    )
+    aiContent.value = res.content
+    generatedBy.value = res.generatedBy
+    if (res.generatedBy === 'template') {
+      genError.value = res.reason === 'no_api_key'
+        ? 'ยังไม่ได้ตั้งค่า Anthropic API key — ใช้ผลจาก template แทน'
+        : 'AI ไม่พร้อมใช้งาน — ใช้ผลจาก template แทน'
+    }
+  } catch {
+    genError.value = 'เรียก AI ไม่สำเร็จ'
+  } finally {
+    generating.value = false
+  }
+}
 
 const captionList = computed(() => {
   const c = content.value
@@ -87,7 +120,13 @@ async function copy(key: string, text: string) {
           <option v-for="t in TONES" :key="t.value" :value="t.value">{{ t.label }}</option>
         </select>
       </label>
+      <button class="ai-btn" :disabled="generating" @click="generateAI">
+        {{ generating ? 'กำลังสร้าง…' : '✦ สร้างด้วย AI' }}
+      </button>
+      <span class="src" :class="generatedBy">{{ generatedBy === 'ai' ? 'สร้างโดย AI' : 'จาก template' }}</span>
     </section>
+
+    <p v-if="genError" class="gen-note">{{ genError }}</p>
 
     <div class="cols">
       <section class="captions">
@@ -147,6 +186,17 @@ h1 { font-size: 1.6rem; font-weight: 600; color: var(--dt-navy); margin: 0.1em 0
   font-size: 0.95rem; color: var(--dt-navy); background: #fff; min-width: 200px;
 }
 .controls select:focus { outline: none; border-color: var(--dt-cyan); }
+.controls { align-items: flex-end; }
+.ai-btn {
+  align-self: flex-end; border: 0; border-radius: 8px; cursor: pointer;
+  font-family: var(--font-body); font-weight: 500; font-size: 0.92rem; color: #fff;
+  background: linear-gradient(135deg, var(--dt-cyan), var(--dt-cyan-d)); padding: 10px 18px;
+}
+.ai-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.src { align-self: flex-end; font-size: 0.76rem; font-weight: 500; padding: 5px 10px; border-radius: 100px; }
+.src.ai { color: var(--dt-cyan-d); background: var(--st-scheduled-bg); }
+.src.template { color: var(--dt-muted); background: var(--dt-surface-2); }
+.gen-note { color: var(--dt-muted); font-size: 0.85rem; margin: -8px 0 12px; }
 .cols { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
 .captions { display: flex; flex-direction: column; gap: 12px; }
 .cap { background: var(--dt-surface); border: 1px solid var(--dt-line); border-radius: 12px; padding: 14px 16px; }

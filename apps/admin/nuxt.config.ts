@@ -28,6 +28,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Server-only (never exposed to the client). Set NUXT_ANTHROPIC_API_KEY to
+    // enable AI generation; leave empty to fall back to the template engine.
+    anthropicApiKey: '',
     public: {
       useEmulator: false,
       imageBucket: '',

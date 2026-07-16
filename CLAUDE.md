@@ -36,6 +36,15 @@ don't rename). Images are pre-sized: `{cover}/{large,medium,thumbnail,tiny}.jpg`
   user's terminal (`! firebase login`).
 
 ## Status
+**Phase 5 AI generation done.** Admin `/facebook/[id]` has a "✦ สร้างด้วย AI" button that POSTs
+to a Nitro server route `apps/admin/server/api/fb-generate.post.ts` calling Claude (`claude-opus-4-8`)
+to produce richer captions in the SAME `GeneratedContent` shape as the template engine. The API key
+is **server-only** (`runtimeConfig.anthropicApiKey` ← `NUXT_ANTHROPIC_API_KEY`, never in the client
+bundle); with no key set it **falls back to the template engine** (verified). Note: this route lives
+in the admin's Nitro server, which exists in `nuxi dev` and the built node server but NOT on static
+Firebase Hosting — for prod it must move to a Cloud Function / Firebase App Hosting. Reference the
+`claude-api` skill before touching the Anthropic integration.
+
 **Phase 4 Facebook Marketing Toolkit (template engine) done.** `packages/marketing` is a pure,
 deterministic generator: `generateFacebookContent(place, {postType, tone})` → 5 caption variants,
 th/en hashtags, CTA, highlights, headline, creative format, image spec, audience. No AI (Phase 5
