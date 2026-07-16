@@ -22,10 +22,17 @@ const { data: article } = await useAsyncData(`article-${slug}`, async () => {
 if (!article.value) throw createError({ statusCode: 404, statusMessage: 'ไม่พบบทความนี้' })
 
 const cover = computed(() => (article.value?.cover ? coverVariants(imageBucket, article.value.cover) : null))
-useHead(() => ({
-  title: article.value ? `${article.value.name} — Dee Travel` : 'Dee Travel',
-  meta: [{ name: 'description', content: article.value?.excerpt ?? '' }],
-}))
+const siteUrl = useRuntimeConfig().public.siteUrl as string
+useSeoMeta({
+  title: () => (article.value ? `${article.value.name} — Dee Travel` : 'Dee Travel'),
+  description: () => article.value?.excerpt ?? '',
+  ogType: 'article',
+  ogTitle: () => article.value?.name ?? '',
+  ogDescription: () => article.value?.excerpt ?? '',
+  ogUrl: `${siteUrl}/articles/${slug}`,
+  ogImage: () => cover.value?.large ?? '',
+  twitterCard: 'summary_large_image',
+})
 </script>
 
 <template>

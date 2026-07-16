@@ -133,6 +133,23 @@ async function saveAsset() {
   }
 }
 
+// --- Share to Facebook (Option A: share dialog + copy caption) ---
+const siteUrl = useRuntimeConfig().public.siteUrl as string
+const shareHint = ref('')
+async function shareToFacebook() {
+  const c = content.value
+  if (!c || !place.value) return
+  const url = `${siteUrl}/places/${place.value.slug}`
+  // Facebook's sharer only pulls the link's OG tags — copy the caption so the
+  // user can paste it into the post. (Direct posting is Option B / Graph API.)
+  try { await navigator.clipboard.writeText(c.captions.long) } catch { /* ignore */ }
+  window.open(
+    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    'fbshare', 'width=640,height=680',
+  )
+  shareHint.value = 'คัดลอกแคปชันแล้ว — วางในช่องโพสต์ Facebook ได้เลย'
+}
+
 // --- Export the current content as CSV ---
 function exportCsv() {
   const c = content.value
@@ -191,11 +208,13 @@ async function copy(key: string, text: string) {
       </div>
       <div class="head-actions">
         <button class="btn btn-ghost" @click="exportCsv">⭳ Export CSV</button>
+        <button class="btn fb-share" @click="shareToFacebook">f  แชร์ไปเฟซบุ๊ก</button>
         <button class="btn btn-primary" :disabled="saving" @click="saveAsset">
           {{ saving ? 'กำลังบันทึก…' : savedId ? 'บันทึกแล้ว ✓' : 'บันทึกคอนเทนต์' }}
         </button>
       </div>
     </header>
+    <p v-if="shareHint" class="gen-note ok">{{ shareHint }}</p>
     <p v-if="saveError" class="gen-note err">{{ saveError }}</p>
 
     <section class="controls">
@@ -269,6 +288,9 @@ async function copy(key: string, text: string) {
 .head { margin: 0.8rem 0 1.4rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .head-actions { display: flex; gap: 10px; }
 .gen-note.err { color: #c0392b; }
+.gen-note.ok { color: var(--st-published); }
+.fb-share { background: #1877f2; color: #fff; font-weight: 700; }
+.fb-share:hover { background: #0f66d0; }
 .eyebrow { font-family: var(--font-display); color: var(--dt-cyan); margin: 0; font-size: 1.05rem; }
 h1 { font-size: 1.6rem; font-weight: 600; color: var(--dt-navy); margin: 0.1em 0 0; }
 .sub { color: var(--dt-muted); margin: 0.2rem 0 0; }

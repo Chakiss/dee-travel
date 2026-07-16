@@ -52,6 +52,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       useEmulator: false,
+      // Public canonical base URL (for OG tags / canonical). Override via NUXT_PUBLIC_SITE_URL.
+      siteUrl: 'https://deetravel-app.web.app',
       // GA4 measurement ID (e.g. G-XXXX). Set NUXT_PUBLIC_GA_ID to enable analytics.
       gaId: '',
       // Bucket that serves cover images. In dev this points at the real prod

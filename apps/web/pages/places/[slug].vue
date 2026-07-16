@@ -33,10 +33,17 @@ const mapUrl = computed(() => {
 })
 const hasValue = (v?: string) => !!v && v.trim() !== '' && v.trim() !== '-'
 
-useHead(() => ({
-  title: place.value ? `${place.value.name} — Dee Travel` : 'Dee Travel',
-  meta: [{ name: 'description', content: place.value?.excerpt ?? '' }],
-}))
+const siteUrl = useRuntimeConfig().public.siteUrl as string
+useSeoMeta({
+  title: () => (place.value ? `${place.value.name} — Dee Travel` : 'Dee Travel'),
+  description: () => place.value?.excerpt ?? '',
+  ogType: 'article',
+  ogTitle: () => place.value?.name ?? '',
+  ogDescription: () => place.value?.excerpt ?? '',
+  ogUrl: `${siteUrl}/places/${slug}`,
+  ogImage: () => cover.value?.large ?? '',
+  twitterCard: 'summary_large_image',
+})
 </script>
 
 <template>

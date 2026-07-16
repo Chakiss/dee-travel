@@ -33,6 +33,8 @@ export default defineNuxtConfig({
     anthropicApiKey: '',
     public: {
       useEmulator: false,
+      // Public site base URL — used to build the shareable link for a place.
+      siteUrl: 'https://deetravel-app.web.app',
       imageBucket: '',
       firebase: {
         apiKey: '',

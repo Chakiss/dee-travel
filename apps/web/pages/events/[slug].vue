@@ -33,10 +33,17 @@ const dates = computed(() => {
     .filter(Boolean) as string[]
 })
 
-useHead(() => ({
-  title: ev.value ? `${ev.value.name} — Dee Travel` : 'Dee Travel',
-  meta: [{ name: 'description', content: ev.value?.excerpt ?? '' }],
-}))
+const siteUrl = useRuntimeConfig().public.siteUrl as string
+useSeoMeta({
+  title: () => (ev.value ? `${ev.value.name} — Dee Travel` : 'Dee Travel'),
+  description: () => ev.value?.excerpt ?? '',
+  ogType: 'article',
+  ogTitle: () => ev.value?.name ?? '',
+  ogDescription: () => ev.value?.excerpt ?? '',
+  ogUrl: `${siteUrl}/events/${slug}`,
+  ogImage: () => cover.value?.large ?? '',
+  twitterCard: 'summary_large_image',
+})
 </script>
 
 <template>
