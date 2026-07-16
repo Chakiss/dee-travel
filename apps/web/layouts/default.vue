@@ -8,6 +8,8 @@
         <nav class="nav">
           <NuxtLink to="/">หน้าแรก</NuxtLink>
           <NuxtLink to="/places">สถานที่</NuxtLink>
+          <NuxtLink to="/articles">บทความ</NuxtLink>
+          <NuxtLink to="/events">เทศกาล</NuxtLink>
         </nav>
       </div>
     </header>
