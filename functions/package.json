@@ -1,0 +1,14 @@
+{
+  "name": "deetravel-functions",
+  "description": "Cloud Functions for Dee Travel (AI content generation)",
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^6.1.0"
+  },
+  "private": true
+}
