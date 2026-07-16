@@ -3,12 +3,14 @@ import {
   doc, getDoc, setDoc, updateDoc, collection, serverTimestamp,
 } from 'firebase/firestore'
 import type { Place, ContentStatus } from '@deetravel/types'
+import { ImageWithVariants } from '@deetravel/ui'
 
 const route = useRoute()
 const id = String(route.params.id)
 const isNew = id === 'new'
 
 const { db, typedCollection, toPlain } = useFirebase()
+const imageBucket = useRuntimeConfig().public.imageBucket as string
 
 const form = reactive<Partial<Place>>({
   name: '', slug: '', excerpt: '', content: '',
@@ -94,6 +96,10 @@ function setStatus(s: ContentStatus) {
       </section>
 
       <aside class="col side">
+        <div v-if="form.cover" class="cover-preview">
+          <span class="f-label">รูปหน้าปก</span>
+          <ImageWithVariants :cover="form.cover" :bucket="imageBucket" :alt="form.name" ratio="4 / 3" />
+        </div>
         <label class="f">
           <span>สถานะ</span>
           <select v-model="form.status">
@@ -133,5 +139,8 @@ h1 { font-size: 1.6rem; font-weight: 600; color: var(--dt-navy); margin: 0; }
 .f textarea { resize: vertical; }
 .mono { font-family: 'SF Mono', ui-monospace, monospace; font-size: 0.82rem; line-height: 1.6; }
 .chk { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--dt-navy); margin-bottom: 14px; }
+.cover-preview { margin-bottom: 16px; }
+.f-label { display: block; font-size: 0.8rem; color: var(--dt-muted); margin-bottom: 4px; }
+.cover-preview :deep(.iv) { border-radius: 10px; overflow: hidden; }
 @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
 </style>
