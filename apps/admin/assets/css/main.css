@@ -1,0 +1,73 @@
+/* Dee Travel Admin — shares the brand tokens (see apps/web + memory design-system). */
+:root {
+  --dt-gold: #db9d1b;
+  --dt-gold-d: #b9860f;
+  --dt-cyan: #00aeef;
+  --dt-cyan-d: #0091c9;
+  --dt-navy: #242a3a;
+  --dt-ink: #2b3140;
+  --dt-black: #1c1c1c;
+
+  --dt-bg: #f5f6f8;
+  --dt-surface: #ffffff;
+  --dt-surface-2: #f2f4f7;
+  --dt-muted: #6b7280;
+  --dt-line: #e4e7ec;
+
+  --font-display: 'Pattaya', ui-serif, cursive;
+  --font-body: 'Kanit', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+  /* status colors */
+  --st-published: #1f9d55;
+  --st-published-bg: #e3f5ea;
+  --st-draft: #8a6d1a;
+  --st-draft-bg: #f6efd9;
+  --st-scheduled: #0091c9;
+  --st-scheduled-bg: #e0f2fb;
+  --st-archived: #6b7280;
+  --st-archived-bg: #eceef1;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 300;
+  color: var(--dt-ink);
+  background: var(--dt-bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+input, select, textarea, button { font-family: inherit; }
+
+/* status pill */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.status.published { color: var(--st-published); background: var(--st-published-bg); }
+.status.draft { color: var(--st-draft); background: var(--st-draft-bg); }
+.status.ready { color: var(--st-scheduled); background: var(--st-scheduled-bg); }
+.status.scheduled { color: var(--st-scheduled); background: var(--st-scheduled-bg); }
+.status.archived { color: var(--st-archived); background: var(--st-archived-bg); }
+
+/* buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 500; font-size: 0.9rem;
+  padding: 9px 18px; border-radius: 6px; border: 1px solid transparent;
+  cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease;
+}
+.btn-primary { background: var(--dt-gold); color: #fff; }
+.btn-primary:hover { background: var(--dt-gold-d); }
+.btn-ghost { background: var(--dt-surface); color: var(--dt-ink); border-color: var(--dt-line); }
+.btn-ghost:hover { border-color: var(--dt-cyan); color: var(--dt-cyan-d); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }

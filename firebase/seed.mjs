@@ -9,6 +9,7 @@
 import { readFileSync } from 'node:fs'
 import { initializeApp } from 'firebase-admin/app'
 import { getFirestore, Timestamp, GeoPoint } from 'firebase-admin/firestore'
+import { getAuth } from 'firebase-admin/auth'
 
 process.env.FIRESTORE_EMULATOR_HOST ||= '127.0.0.1:8080'
 if (!process.env.FIRESTORE_EMULATOR_HOST) {
@@ -60,5 +61,17 @@ await seedCollection('places', places)
 // Read-back — confirms writes landed and published-content queries work.
 const published = await db.collection('places').where('status', '==', 'published').get()
 console.log(`Read-back: ${published.size} published places -> ${published.docs.map((d) => d.get('name')).join(', ')}`)
+
+// Seed an admin user in the Auth emulator (role claim makes writes pass the rules).
+if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+  const auth = getAuth()
+  const email = 'admin@deetravel.local'
+  let user
+  try { user = await auth.getUserByEmail(email) }
+  catch { user = await auth.createUser({ email, password: 'dee12345', displayName: 'Dee Admin' }) }
+  await auth.setCustomUserClaims(user.uid, { role: 'admin' })
+  console.log(`Auth: ${email} (role=admin, password=dee12345)`)
+}
+
 console.log('Done.')
 process.exit(0)

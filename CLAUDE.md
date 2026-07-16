@@ -36,6 +36,16 @@ don't rename). Images are pre-sized: `{cover}/{large,medium,thumbnail,tiny}.jpg`
   user's terminal (`! firebase login`).
 
 ## Status
+**Phase 3 admin started** — `apps/admin` (Nuxt SPA) has: Firebase Auth login (`pages/login.vue`),
+async auth plugin + global route guard, sidebar layout, dashboard, places list, and a working
+place editor that **writes to Firestore through the role-based rules** (verified end-to-end in a
+browser). Dev admin user is seeded into the Auth emulator: `admin@deetravel.local` / `dee12345`
+(custom claim `role: admin`) — created by `firebase/seed.mjs` when `FIREBASE_AUTH_EMULATOR_HOST`
+is set, so run emulators with auth: `pnpm emulators` (starts auth+firestore+storage) then `pnpm seed`.
+Admin dev: `pnpm --filter @deetravel/admin dev`. **Admin is a SPA (ssr:false)** — its public
+runtimeConfig must be present at build OR injected by the nitro server at runtime via NUXT_PUBLIC_*
+env (the `.env` covers `nuxi dev`; a built preview needs the env passed to `node .output/server`).
+
 Phase 0 (backup + audit) done. Phase 1 (foundation) mostly done: monorepo + `@deetravel/types`
 + `@deetravel/firebase`; `apps/web` (SSR, render verified) + `apps/admin` (SPA) build;
 **Emulator-only dev env works** (seed + published-query verified). Dev = offline
