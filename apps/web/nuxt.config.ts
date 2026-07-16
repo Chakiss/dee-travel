@@ -8,6 +8,16 @@ export default defineNuxtConfig({
   // Workspace UI package ships .vue SFCs — Vite must transpile it.
   build: { transpile: ['@deetravel/ui'] },
 
+  // SSG (nuxi generate): crawl all content pages; don't fail the whole build when
+  // a place's external website link (rendered in content) 404s as a route.
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      failOnError: false,
+      routes: ['/', '/places', '/articles', '/events'],
+    },
+  },
+
   css: ['~/assets/css/main.css'],
 
   app: {
@@ -22,9 +32,8 @@ export default defineNuxtConfig({
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600;1,700&family=Pattaya&display=swap',
         },
-        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
-        { rel: 'icon', href: '/favicon.ico' },
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', href: '/brand/icon.png' },
+        { rel: 'apple-touch-icon', href: '/brand/icon.png' },
       ],
     },
   },

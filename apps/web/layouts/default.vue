@@ -3,7 +3,7 @@
     <header class="site-header">
       <div class="bar">
         <NuxtLink to="/" class="brand" aria-label="Dee Travel หน้าแรก">
-          <img src="/brand/logo-color.png" alt="Dee Travel" class="brand-logo">
+          <img src="/brand/icon.png" alt="Dee Travel" class="brand-logo">
         </NuxtLink>
         <nav class="nav">
           <NuxtLink to="/">หน้าแรก</NuxtLink>

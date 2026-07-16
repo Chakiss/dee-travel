@@ -10,6 +10,38 @@
     "source": "functions",
     "runtime": "nodejs20"
   },
+  "hosting": [
+    {
+      "site": "deetravel-app",
+      "public": "apps/web/.output/public",
+      "cleanUrls": true,
+      "trailingSlash": false,
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "redirects": [
+        { "source": "/place/:slug", "destination": "/places/:slug", "type": 301 },
+        { "source": "/article/:slug", "destination": "/articles/:slug", "type": 301 },
+        { "source": "/event/:slug", "destination": "/events/:slug", "type": 301 },
+        { "source": "/home", "destination": "/", "type": 301 },
+        { "source": "/stories", "destination": "/articles", "type": 301 },
+        { "source": "/trips", "destination": "/articles", "type": 301 },
+        { "source": "/destinations", "destination": "/places", "type": 301 },
+        { "source": "/activities", "destination": "/places", "type": 301 },
+        { "source": "/plans", "destination": "/places", "type": 301 },
+        { "source": "/agencies", "destination": "/places", "type": 301 },
+        { "source": "/province/:slug", "destination": "/places", "type": 301 },
+        { "source": "/district/:slug", "destination": "/places", "type": 301 },
+        { "source": "/subdistrict/:slug", "destination": "/places", "type": 301 },
+        { "source": "/geography/:slug", "destination": "/places", "type": 301 }
+      ],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+    },
+    {
+      "site": "deetravel-cms",
+      "public": "apps/admin/.output/public",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+    }
+  ],
   "emulators": {
     "auth": { "port": 9099 },
     "firestore": { "port": 8080 },

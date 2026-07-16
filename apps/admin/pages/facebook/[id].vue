@@ -50,20 +50,33 @@ async function generateAI() {
   if (!place.value) return
   generating.value = true
   genError.value = ''
+  const payload = { input: marketingInput(), postType: postType.value, tone: tone.value }
+  const useEmu = useRuntimeConfig().public.useEmulator as boolean
   try {
-    const res = await $fetch<{ content: GeneratedContent; generatedBy: 'ai' | 'template'; reason?: string }>(
-      '/api/fb-generate',
-      { method: 'POST', body: { input: marketingInput(), postType: postType.value, tone: tone.value } },
-    )
-    aiContent.value = res.content
-    generatedBy.value = res.generatedBy
-    if (res.generatedBy === 'template') {
-      genError.value = res.reason === 'no_api_key'
-        ? 'ยังไม่ได้ตั้งค่า Anthropic API key — ใช้ผลจาก template แทน'
-        : 'AI ไม่พร้อมใช้งาน — ใช้ผลจาก template แทน'
+    if (useEmu) {
+      // Dev: Nitro server route (nuxi dev has a server).
+      const res = await $fetch<{ content: GeneratedContent; generatedBy: 'ai' | 'template'; reason?: string }>(
+        '/api/fb-generate', { method: 'POST', body: payload },
+      )
+      aiContent.value = res.content
+      generatedBy.value = res.generatedBy
+      if (res.generatedBy === 'template') genError.value = 'AI ไม่พร้อม — ใช้ template แทน'
+    } else {
+      // Prod: callable Cloud Function (static hosting has no server).
+      const { app } = useFirebase()
+      const { getFunctions, httpsCallable } = await import('firebase/functions')
+      const fn = httpsCallable<typeof payload, { content: GeneratedContent; generatedBy: 'ai' }>(
+        getFunctions(app, 'asia-southeast1'), 'generateFbContent',
+      )
+      const res = await fn(payload)
+      aiContent.value = res.data.content
+      generatedBy.value = 'ai'
     }
   } catch {
-    genError.value = 'เรียก AI ไม่สำเร็จ'
+    // Function unavailable / no key → keep the deterministic template result.
+    aiContent.value = templateContent.value
+    generatedBy.value = 'template'
+    genError.value = 'AI ยังไม่พร้อม (ต้องตั้ง Anthropic secret + deploy function) — ใช้ template แทน'
   } finally {
     generating.value = false
   }
