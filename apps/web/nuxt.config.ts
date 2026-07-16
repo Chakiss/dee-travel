@@ -43,6 +43,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       useEmulator: false,
+      // GA4 measurement ID (e.g. G-XXXX). Set NUXT_PUBLIC_GA_ID to enable analytics.
+      gaId: '',
       // Bucket that serves cover images. In dev this points at the real prod
       // bucket (public read) even while Firestore is read from the emulator.
       imageBucket: '',

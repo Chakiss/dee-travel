@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import type { Place } from '@deetravel/types'
 import {
   generateFacebookContent, POST_TYPES, TONES,
@@ -81,6 +81,77 @@ const captionList = computed(() => {
   ]
 })
 
+// --- Save to Firestore (marketingAssets) — exercises the editor-only rule ---
+const saving = ref(false)
+const savedId = ref('')
+const saveError = ref('')
+async function saveAsset() {
+  const c = content.value
+  if (!c || !place.value) return
+  saving.value = true
+  saveError.value = ''
+  try {
+    const ref = await addDoc(collection(db, 'marketingAssets'), {
+      content: { collection: 'places', id, type: 'place' },
+      postType: c.postType,
+      tone: c.tone,
+      captions: c.captions,
+      headline: c.headline,
+      shortDescription: c.shortDescription,
+      imageOverlayText: c.imageOverlayText,
+      highlights: c.highlights,
+      hashtags: c.hashtags,
+      cta: c.cta,
+      creativeFormat: c.creativeFormat,
+      recommendedImages: c.recommendedImages,
+      imageSpec: c.imageSpec,
+      suggestedAudience: c.suggestedAudience,
+      status: 'draft',
+      generatedBy: generatedBy.value,
+      usageCount: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    })
+    savedId.value = ref.id
+  } catch {
+    saveError.value = 'บันทึกไม่สำเร็จ (สิทธิ์ editor ไม่พอ?)'
+  } finally {
+    saving.value = false
+  }
+}
+
+// --- Export the current content as CSV ---
+function exportCsv() {
+  const c = content.value
+  if (!c || !place.value) return
+  const esc = (s: string) => `"${String(s ?? '').replace(/"/g, '""')}"`
+  const rows: [string, string][] = [
+    ['สถานที่', place.value.name],
+    ['ประเภทโพสต์', c.postType],
+    ['โทน', c.tone],
+    ['headline', c.headline],
+    ['caption_short', c.captions.short],
+    ['caption_long', c.captions.long],
+    ['caption_friendly', c.captions.friendly],
+    ['caption_salesy', c.captions.salesy],
+    ['caption_engagement', c.captions.engagement],
+    ['hashtags_th', c.hashtags.th.join(' ')],
+    ['hashtags_en', c.hashtags.en.join(' ')],
+    ['cta', c.cta],
+    ['creativeFormat', c.creativeFormat],
+    ['imageSpec', `${c.imageSpec.ratio} ${c.imageSpec.size}`],
+    ['suggestedAudience', c.suggestedAudience],
+  ]
+  const csv = '﻿' + [['field', 'value'], ...rows].map((r) => r.map(esc).join(',')).join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `fb-${place.value.slug ?? id}-${c.postType}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 const copied = ref('')
 let timer: ReturnType<typeof setTimeout> | undefined
 async function copy(key: string, text: string) {
@@ -105,7 +176,14 @@ async function copy(key: string, text: string) {
         <h1>สร้างคอนเทนต์ Facebook</h1>
         <p class="sub">{{ place.name }}</p>
       </div>
+      <div class="head-actions">
+        <button class="btn btn-ghost" @click="exportCsv">⭳ Export CSV</button>
+        <button class="btn btn-primary" :disabled="saving" @click="saveAsset">
+          {{ saving ? 'กำลังบันทึก…' : savedId ? 'บันทึกแล้ว ✓' : 'บันทึกคอนเทนต์' }}
+        </button>
+      </div>
     </header>
+    <p v-if="saveError" class="gen-note err">{{ saveError }}</p>
 
     <section class="controls">
       <label>
@@ -175,7 +253,9 @@ async function copy(key: string, text: string) {
 
 <style scoped>
 .back { color: var(--dt-cyan-d); font-weight: 500; font-size: 0.9rem; }
-.head { margin: 0.8rem 0 1.4rem; }
+.head { margin: 0.8rem 0 1.4rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.head-actions { display: flex; gap: 10px; }
+.gen-note.err { color: #c0392b; }
 .eyebrow { font-family: var(--font-display); color: var(--dt-cyan); margin: 0; font-size: 1.05rem; }
 h1 { font-size: 1.6rem; font-weight: 600; color: var(--dt-navy); margin: 0.1em 0 0; }
 .sub { color: var(--dt-muted); margin: 0.2rem 0 0; }
